@@ -1,0 +1,65 @@
+<nav search_view="search" color="#0159A9">
+  <view name="overview_2" default='true' />
+  <view name="reamtime"  />
+  <view name="top_10s" />
+  
+  <collection label="Access Control">
+	<view name="bandwidth_report" />
+      <collection label="Firewall">
+		<view name="firewall_access_controls" />
+      </collection>
+      <collection label="Web">
+		<view name="web_access_controls" />
+        <view name="web_access_controls__user_search" />
+      </collection>
+  </collection>
+
+  <collection label="Threat Prevention">
+    <view name="threat_prevention" />
+    <view name="threat_prevention__user_search" />
+    <view name="sandbox" />
+  </collection>
+  
+  <collection label="Private Access">
+    <view name="zpa-perf-overview"/>
+    <view name="private_access" />
+    <view name="private_access__user_search" />
+  </collection>
+ 
+  <collection label="Data Protection">
+    <a href="https://www.zscaler.com">Zscaler DLP Workflow - Coming Soon</a>
+  </collection>
+  
+  <collection label="Admin">
+    <view name="administrative_audit" />
+  </collection>
+  
+  <collection label="Performance History">
+    <a href="https://www.zscaler.com">Zscaler Analyzer report - Coming Soon</a>
+  </collection> 
+  
+  <collection label="Zscaler Tools">
+    <a href="https://www.zscaler.com">Zscaler Website</a>
+    <a href="https://www.zscaler.com/blogs/research">Threat Labz</a>
+    <a href="https://ip.zscaler.com">IP Check (ip.zscaler.com)</a>
+    <a href="https://filecheck.zscaler.com">File Check</a>
+    <a href="https://sitereview.zscaler.com/">Site Review (URL Lookup)</a>
+    <a href="https://trust.zscaler.com">Trust (Cloud Availability and Statistics)</a>
+    <collection label="Zscaler Admin">
+    	<a href="https://admin.zscaler.net">Admin UI - Zscaler.net</a>
+    	<a href="https://admin.zscalertwo.net">Admin UI - Zscalertwo.net</a>
+        <a href="https://admin.zscalerthree.net">Admin UI - Zscalerthree.net</a>
+    	<a href="https://admin.zscloud.net">Admin UI - Zscloud.net</a>
+        <a href="https://admin.private.zscaler.com">Admin UI - ZPA</a>
+        <a href="https://admin.zscalerbeta.net">Admin UI - Zscalerbeta.net</a>
+    </collection>
+  </collection> 
+  
+  <collection isVisible="false" label="Other Items">
+  	<view isVisible="false" name="reports" />
+    <view isVisible="false" name="datasets" />
+    <view isVisible="false" name="alerts" />
+    <view isVisible="false" name="dashboards" />
+  </collection>
+  <view name="search" />
+</nav>

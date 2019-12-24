@@ -1,0 +1,234 @@
+<form theme="dark">
+  <label>Threat Insights Dashboard</label>
+  <fieldset submitButton="false" autoRun="false">
+    <input type="time" token="time_selection_threat" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="location_selection_threat" searchWhenChanged="true">
+      <label>Location</label>
+      <choice value="*">All</choice>
+      <fieldForLabel>location</fieldForLabel>
+      <fieldForValue>location</fieldForValue>
+      <search>
+        <query>`z-web`|stats count by location</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <default>*</default>
+      <initialValue>*</initialValue>
+    </input>
+    <input type="dropdown" token="department_selection_threat" searchWhenChanged="true">
+      <label>Department</label>
+      <fieldForLabel>department</fieldForLabel>
+      <fieldForValue>department</fieldForValue>
+      <search>
+        <query>`z-web` location = $location_selection_threat$ | stats count by department</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <choice value="*">All</choice>
+      <default>*</default>
+      <initialValue>*</initialValue>
+    </input>
+    <input type="dropdown" token="user_selection_threat" searchWhenChanged="true">
+      <label>User</label>
+      <choice value="*">All</choice>
+      <default>*</default>
+      <fieldForLabel>user</fieldForLabel>
+      <fieldForValue>user</fieldForValue>
+      <search>
+        <query>`z-web` location = $location_selection_threat$ department = $department_selection_threat$ |where user != location |stats count by user</query>
+      </search>
+      <initialValue>*</initialValue>
+    </input>
+    <input type="text" token="field1">
+      <label>field1</label>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Malware Categories</title>
+      <table>
+        <search>
+          <query>`z-web`location = $location_selection_threat$ department = $department_selection_threat$ user = $user_selection_threat$ (threatcategory!= "None" AND threatcategory!="Sandbox Benign" AND threatcategory!="Submitted to Sandbox") | stats count as total_transactions count(eval(reason = "Allowed")) as allowed  count(eval(reason != "Allowed")) as blocked count(eval(protocol = "HTTPS" OR protocol = "SSL")) as hiding_behindSSL by threatcategory | eval percent_allowed = (allowed*100/total_transactions) | eval  percent_blocked = (blocked*100/total_transactions) | eval hiding_behind_SSL = (hiding_behindSSL*100/total_transactions) | table  threatcategory total_transactions percent_allowed percent_blocked  hiding_behind_SSL</query>
+          <earliest>rt-24h</earliest>
+          <latest>rt</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="number" field="total_transactions">
+          <option name="precision">0</option>
+        </format>
+        <format type="number" field="percent_allowed">
+          <option name="unit">%</option>
+        </format>
+        <format type="number" field="percent_blocked">
+          <option name="unit">%</option>
+        </format>
+        <format type="number" field="hiding_behind_SSL">
+          <option name="unit">%</option>
+        </format>
+      </table>
+    </panel>
+    <panel>
+      <title>Advanced Threat Categories</title>
+      <table>
+        <search>
+          <query>`z-web` location = $location_selection_threat$ department = $department_selection_threat$ user = $user_selection_threat$ urlclass = "Advanced Security Risk" | stats count as total_transactions count(eval(reason = "Allowed")) as allowed  count(eval(reason != "Allowed")) as blocked count(eval(protocol = "HTTPS" OR protocol = "SSL")) as hiding_behindSSL  count(eval(match(reason, "IPS block*"))) as IPSBlocks by urlcategory | eval percent_allowed = (allowed*100/total_transactions) | eval  percent_blocked = (blocked*100/total_transactions) | eval hiding_behind_SSL = (hiding_behindSSL*100/total_transactions) | eval IPS_Blocks = (IPSBlocks*100/total_transactions) | table  urlcategory total_transactions percent_allowed percent_blocked hiding_behind_SSL IPS_Blocks</query>
+          <earliest>rt-24h</earliest>
+          <latest>rt</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="number" field="percent_allowed">
+          <option name="unit">%</option>
+        </format>
+        <format type="number" field="percent_blocked">
+          <option name="unit">%</option>
+        </format>
+        <format type="number" field="hiding_behind_SSL">
+          <option name="unit">%</option>
+        </format>
+        <format type="number" field="IPS_Blocks"></format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <u1> </u1>
+     </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Threat Activity</title>
+      <input type="dropdown" token="threatcat_selection" searchWhenChanged="true">
+        <label>Threat Category</label>
+        <choice value="*">All</choice>
+        <choice value="Adware">Adware</choice>
+        <choice value="Ransomware">Ransomware</choice>
+        <choice value="Spyware">Spyware</choice>
+        <choice value="Unwanted Applications">Unwanted Applications</choice>
+        <choice value="Virus">Virus</choice>
+        <choice value="Worm">Worm</choice>
+        <choice value="Trojan">Trojan</choice>
+        <choice value="Phishing">Phishing</choice>
+        <choice value="Adv Security">Adv Security</choice>
+        <choice value="Botnets">Botnets</choice>
+        <choice value="Malicious URLs">Malicious URLs</choice>
+        <choice value="Peer to peer">Peer to peer</choice>
+        <choice value="Unauthorized Communication">Unauthorized Communication</choice>
+        <choice value="Cross-site Scripting">Cross-site Scripting</choice>
+        <choice value="Browser Exploit">Browser Exploit</choice>
+        <choice value="Suspicious Destinations">Suspicious Destinations</choice>
+        <choice value="Suspected Spyware or Adware">Suspected Spyware or Adware</choice>
+        <choice value="WebSpam">WebSpam</choice>
+        <choice value="PageRisk">PageRisk</choice>
+        <choice value="Adware/Spyware Sites">Adware/Spyware Sites</choice>
+        <choice value="Cryptominin">Cryptominin</choice>
+        <choice value="Sandbox Malware">Sandbox Malware</choice>
+        <choice value="Sandbox Adware">Sandbox Adware</choice>
+        <default>*</default>
+        <search>
+          <query/>
+        </search>
+        <initialValue>*</initialValue>
+      </input>
+      <input type="dropdown" token="threatname_selection">
+        <label>Threat Name</label>
+        <choice value="*">All</choice>
+        <fieldForLabel>threatname</fieldForLabel>
+        <fieldForValue>threatname</fieldForValue>
+        <search>
+          <query>`z-web` location = $location_selection_threat$ department = $department_selection_threat$ user = $user_selection_threat$  protocol = $protocol_selection_threat$ (urlcategory = $threatcat_selection$ OR threatcategory  = $threatcat_selection$) threatname!="None" | stats count by threatname</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <default>*</default>
+        <initialValue>*</initialValue>
+      </input>
+      <input type="dropdown" token="protocol_selection_threat" searchWhenChanged="true">
+        <label>Protocol</label>
+        <choice value="*">All</choice>
+        <fieldForLabel>protocol</fieldForLabel>
+        <fieldForValue>protocol</fieldForValue>
+        <search>
+          <query>`z-web` | stats count by protocol</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <default>*</default>
+        <initialValue>*</initialValue>
+      </input>
+      <table>
+        <search>
+          <query>`z-web` location = $location_selection_threat$ department = $department_selection_threat$ user = $user_selection_threat$  protocol = $protocol_selection_threat$ (urlcategory = $threatcat_selection$ OR threatcategory  = $threatcat_selection$) threatname!="None" threatname = $threatname_selection$ | eval threattype = case(urlclass == "Advanced Security Risk", "Advanced Threats", threatcategory!="None","Malware") | eval threat_category = case(urlclass == "Advanced Security Risk", urlcategory, threatcategory!="None",threatcategory) | stats count as transactions dc(user) as users dc(location) as locations  first(_time) as firsttime latest(_time) AS latesttime by threatname threattype threat_category | convert ctime(firsttime) | convert ctime(latesttime) | sort - latesttime</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">true</option>
+        <option name="wrap">true</option>
+        <drilldown>
+          <set token="form.userlist">$click.value$</set>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$form.userlist$">
+      <title>USERS IMPACTED BY THREATNAME - $form.userlist$</title>
+      <table>
+        <search>
+          <query>`z-web` location = $location_selection_threat$ department = $department_selection_threat$ user = $user_selection_threat$ protocol = $protocol_selection_threat$ reason!= "Allowed" AND (threatcategory!= "None" OR urlclass = "Advanced Security Risk")| where location != user| search threatname = "$form.userlist$" | stats count as transactions by user | sort - transactions</query>
+          <earliest>$time_selection_threat.earliest$</earliest>
+          <latest>$time_selection_threat.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <drilldown>
+          <unset token="form.userlist"></unset>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <u1> </u1>
+     </html>
+    </panel>
+  </row>
+</form>

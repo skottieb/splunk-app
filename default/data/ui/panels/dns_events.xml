@@ -1,0 +1,8 @@
+<panel>
+  <title>DNS Events</title>
+  <single>
+    <search ref="DNS - Event Count">
+      <earliest>0</earliest>
+    </search>
+  </single>
+</panel>

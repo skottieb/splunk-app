@@ -1,0 +1,56 @@
+[app/install/install_source_checksum]
+version = 7.2.6
+modtime = 1565387513.846170000
+
+[inputs/zscalerapi-zia-sandbox%3A%2F%2FZS2_Sandbox_SM]
+owner = sbullock
+version = 7.2.6
+modtime = 1566616651.183044000
+
+[inputs/zscalerapi-zia-audit%3A%2F%2FZS2_Audit_SM]
+owner = sbullock
+version = 7.2.6
+modtime = 1566616733.651410000
+
+[views/test_dashboard_3__back_up]
+export = none
+owner = pragyan
+version = 7.2.6
+modtime = 1567813514.899864000
+
+[views/web_traffic_overview]
+access = read : [ * ]
+export = none
+owner = pragyan
+version = 7.2.6
+modtime = 1568404007.329329000
+
+[views/security_dashboard]
+access = read : [ * ]
+export = none
+owner = pragyan
+version = 8.0.1
+modtime = 1577158194.269805000
+
+[views/threat_insights_dashboard]
+access = read : [ * ], write : [ admin ]
+export = none
+owner = pragyan
+version = 7.2.6
+modtime = 1568914437.055733000
+
+[nav/default]
+version = 7.2.6
+modtime = 1568647570.028400000
+
+[views/sandbox]
+version = 7.2.6
+modtime = 1568647958.665602000
+
+[views/overview_2]
+version = 8.0.1
+modtime = 1577157925.185202000
+
+[views/bandwidth_report]
+version = 8.0.1
+modtime = 1577158102.753336000
